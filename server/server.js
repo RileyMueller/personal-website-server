@@ -3,10 +3,10 @@ const routes = require('./routes');
 
 const app = express();
 
-const port = 4000;
+app.get("/test", async (req, res) => {
+    res.status(200).json({ message: "pass!" });
+  });
 
 app.use('/', routes)
 
-app.listen(port, () => {
-    console.log(`Node.js server listening on port ${port}`);
-});
+module.exports = app;

@@ -1,11 +1,11 @@
 const express = require('express');
 const { getFeed } = require('./controller.rssfeed');
-const { RSSFeed, BlogPost } = require('./db/models');
-const { db } = require('./db/conn');
+const RSSFeed = require('./models/RSSFeed');
+const BlogPost = require('./models/BlogPost');
 const bodyParser = require('body-parser');
 const router = express.Router();
 
-router.use(bodyParser.json())
+router.use(bodyParser.json());
 
 router.post('/api/save_blogpost', async (req, res) => {
     try {
@@ -19,38 +19,27 @@ router.post('/api/save_blogpost', async (req, res) => {
         // Save the blogpost document to the database
         await blogPost.save();
         res.status(201).send({
-            status: 'success',
             message: 'Successfully saved blog post',
         });
     } catch (err) {
         res.status(500).send({
-            status: 'error',
-            message: 'Failed to get documents',
-            error: err.message
+            message: err.message
         });
     }
-})
+});
 
-router.get('/api/find_documents', async (req, res) => {
-    try {
-        const { modelname, filter } = req.body;
-        const Model = db.model(modelname);
-        const docs = await Model.find(filter).exec();
-
+router.get('/api/get_blogposts', async(req, res) => { 
+    try { 
+        const posts = await BlogPost.find({}).exec(); 
         res.status(200).send({
-            status: 'success',
-            message: `Found documents`,
-            documents: docs
-        });
-
-    } catch (err) {
+            message: posts 
+        }); 
+    } catch (err) { 
         res.status(500).send({
-            status: 'error',
-            message: 'Failed to get documents',
-            error: err.message
-        });
-    }
-})
+            message: err.message 
+        }); 
+    } 
+});
 
 router.post('/api/save_rss_feed', async (req, res) => {
     try {
@@ -67,15 +56,13 @@ router.post('/api/save_rss_feed', async (req, res) => {
             items: feed.items
         });
 
-        const Model = db.model(RSSFeed.modelName);
-        const dupe = await Model.findOne({ link: rssFeed.link }).exec();
+        const dupe = await RSSFeed.findOne({ link: rssFeed.link }).exec();
 
         if (dupe) {
             const n = rssFeed.items.length;
             const extra = n - dupe.items.length;
             if (extra == 0) {
                 res.status(304).send({
-                    status: 'success',
                     message: 'Stored feed is already up to date',
                 });
             } else {
@@ -86,26 +73,35 @@ router.post('/api/save_rss_feed', async (req, res) => {
 
                 await dupe.save();
                 res.status(201).send({
-                    status: 'success',
-                    message: `Saved an additional ${extra} item(s) to feed`,
+                    message: `Saved an additional ${extra} item(s) to feed`
                 });
             }
         } else {
             // Save the RSSFeed model to the database
             await rssFeed.save();
             res.status(201).send({
-                status: 'success',
                 message: 'Successfully saved RSS feed',
             });
         }
 
     } catch (err) {
         res.status(500).send({
-            status: 'error',
-            message: 'Failed to save RSS feed',
-            error: err.message,
+            message: err.message,
         });
     }
-})
+});
+
+router.get('/api/get_rss_feeds', async(req, res) => { 
+    try { 
+        const docs = await RSSFeed.find({}).exec(); 
+        res.status(200).send({
+            message: docs 
+        }); 
+    } catch (err) { 
+        res.status(500).send({ 
+            message: err.message 
+        }); 
+    } 
+});
 
 module.exports = router;

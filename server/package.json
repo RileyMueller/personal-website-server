@@ -4,7 +4,10 @@
   "description": "My personal website for showing off my projects as well as providing a personal dashboard for my various feeds.",
   "main": "server.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node start.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:handles": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -29,5 +32,12 @@
     "mongodb": "^4.12.1",
     "mongoose": "^6.8.0",
     "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "supertest": "^6.3.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
