@@ -13,16 +13,6 @@ const request = supertest(app);
 
 
 describe('tests run when', () => {
-    it('Testing /test', async () => {
-        return new Promise(async (resolve) => {
-            const response = await request.get("/test");
-
-            expect(response.status).toBe(200);
-            expect(response.body.message).toBe("pass!");
-
-            resolve();
-        });
-    });
     it('Testing /api/save_blogpost', async () => {
         return new Promise(async (resolve) => {
             const response = await request.post("/api/save_blogpost").send({
@@ -50,6 +40,7 @@ describe('tests run when', () => {
     it('Testing /api/save_rss_feed', async () => {
         return new Promise(async (resolve) => {
             const response = await request.post("/api/save_rss_feed").send({
+                // Test might fail if royalroad is ever down
                 url: "https://www.royalroad.com/fiction/syndication/21322"
             });
 
