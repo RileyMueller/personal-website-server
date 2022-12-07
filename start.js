@@ -12,6 +12,7 @@ const app = require('./server');
 
 const port = 4000;
 
+// You do not need to listen for tests? So its done here
 app.listen(port, () => {
     console.log(`Node.js server listening on port ${port}`);
 });
