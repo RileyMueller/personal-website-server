@@ -1,10 +1,10 @@
 const express = require('express');
 const rssfeedController = require('./controllers/rssfeed.controller');
 const BlogPost = require('./models/blogpost.model');
-const bodyParser = require('body-parser');
 const router = express.Router();
 
-router.use(bodyParser.json());
+router.use(express.json());
+
 
 router.post('/api/save_blogpost', async (req, res) => {
     try {
