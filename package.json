@@ -4,7 +4,7 @@
   "description": "My personal website for showing off my projects as well as providing a personal dashboard for my various feeds.",
   "main": "server.js",
   "scripts": {
-    "start": "node start.js",
+    "start": "nodemon start.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:handles": "jest --detectOpenHandles"

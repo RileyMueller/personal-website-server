@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const RSSFeedSchema = new Schema(
+const RSSFeedSchema = new mongoose.Schema(
 	{
 		title: {
 			type: String,
@@ -38,4 +37,6 @@ const RSSFeedSchema = new Schema(
 	}
 );
 
-module.exports = mongoose.model('RSSFeed', RSSFeedSchema);
+const RSSFeed = mongoose.model('RSSFeed', RSSFeedSchema);
+
+module.exports = { RSSFeed :  RSSFeed}

@@ -1,3 +1,4 @@
+const rssfeedRepository = require('../repository/rssfeed.repository');
 const fetch = require('node-fetch');
 const FeedParser = require('feedparser');
 var iconv = require('iconv-lite');
@@ -75,5 +76,24 @@ function getParams(str) {
     return params;
 }
 
+class RSSFeedService {
 
-module.exports = { getFeed };
+    async getRSSFeeds() {
+        return await rssfeedRepository.getRSSFeeds();
+    }
+
+    async saveRSSFeed(url) {
+        const feed = await getFeed(url);
+        return await rssfeedRepository.saveRSSFeed(feed);
+    }
+    async updateRSSFeed(url) {
+        const feed = await getFeed(url);
+        return await rssfeedRepository.updateRSSFeed(feed);
+    }
+    async deleteRSSFeed(rssfeedId) {
+        return await rssfeedRepository.deleteRSSFeed(rssfeedId);
+    }
+
+}
+
+module.exports = new RSSFeedService();

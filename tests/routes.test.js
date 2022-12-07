@@ -12,50 +12,58 @@ const app = require('../server');
 const request = supertest(app);
 
 
-describe('tests run when', () => {
-    it('Testing /api/save_blogpost', async () => {
-        return new Promise(async (resolve) => {
-            const response = await request.post("/api/save_blogpost").send({
-                title: "Test Title",
-                subtitle: "Test Subtitle",
-                body: "Test Body"
-            });
+describe('API Testing Suite', () => {
 
-            expect(response.status).toBe(201);
-            expect(response.body.message).toBe("Successfully saved blog post");
+    it('Should retrieve existing rssfeeds', async() => {
+        return new Promise(async (resolve) => {
+            const response = await request.get('/api/rssfeeds');
+
+            expect(response._body.length == 2);
 
             resolve();
-        });
-    });
-    it('Testing /api/get_blogposts', async () => {
-        return new Promise(async (resolve) => {
-            const response = await request.get("/api/get_blogposts");
 
-            expect(response.status).toBe(200);
-            expect(response.body.message.length).toBe(1);
-
-            resolve();
         });
-    });
-    it('Testing /api/save_rss_feed', async () => {
+    })
+
+    it('Should add new rssfeeds', async () => {
         return new Promise(async (resolve) => {
-            const response = await request.post("/api/save_rss_feed").send({
+            const response = await request.post("/api/rssfeed").send({
                 // Test might fail if royalroad is ever down
-                url: "https://www.royalroad.com/fiction/syndication/21322"
+                url: "https://www.royalroad.com/fiction/syndication/54068"
             });
 
-            expect(response.status).toBe(201);
-            expect(response.body.message).toBe("Successfully saved RSS feed");
+            expect(response._body.title).toBe('Modern Patriarch');
+            
+            resolve();
+        });
+    });
+
+
+    it('Should update stored rssfeeds', async () => {
+        return new Promise(async (resolve) => {
+
+            // The database has this feed but no items
+            const response = await request.put('/api/rssfeed').send({
+                url: 'https://www.royalroad.com/fiction/syndication/21322'
+            });
+
+
+            expect(response._body.acknowledged).toBe(true);
+            expect(response._body.modifiedCount).toBe(1);
+            expect(response._body.matchedCount).toBe(1);
 
             resolve();
         });
     });
-    it('Testing /api/get_rss_feeds', async () => {
-        return new Promise(async (resolve) => {
-            const response = await request.get("/api/get_rss_feeds");
 
-            expect(response.status).toBe(200);
-            expect(response.body.message.length).toBe(1);
+    it('Should delete stored rssfeed', async () => {
+        return new Promise(async (resolve) => {
+
+            // The database has this feed but no items
+            const response = await request.delete('/api/rssfeed/339012c7d6e728b3a0be2c52');
+
+            // Status is only true if actually deleted an item
+            expect(response._body.status).toBe('true');
 
             resolve();
         });
